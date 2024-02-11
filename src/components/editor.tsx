@@ -89,12 +89,11 @@ export function Editor() {
                 <Images
                   values={images}
                   onChange={setImages}
-                  onInsert={(imageIndex) =>
-                    setMarkdown(
-                      (m) =>
-                        `${m}<img src="images:${imageIndex}" width="100" height="100" alt="image">`
-                    )
-                  }
+                  onInsert={(imageIndex) => {
+                    setMarkdown(currentMarkdown => 
+                      `${currentMarkdown}<img src="images:${imageIndex}" width="100" height="100" alt="image">`
+                    );
+                  }}
                 />
               </Form.Item>
               <Row justify="center">

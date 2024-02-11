@@ -42,7 +42,15 @@ export function usePersistence(ignorePersisted?: boolean) {
   // Update functions for each piece of state
   const setTitle = (title: string) => setState(prev => ({ ...prev, title }));
   const setBrief = (brief: string) => setState(prev => ({ ...prev, brief }));
-  const setMarkdown = (markdown: string) => setState(prev => ({ ...prev, markdown }));
+  const setMarkdown = (markdownInput: string | ((currentMarkdown: string) => string)) => {
+    setState((prevState) => {
+      // Determine the new markdown based on whether markdownInput is a function or a string
+      const newMarkdown = typeof markdownInput === 'function' ? markdownInput(prevState.markdown) : markdownInput;
+      // Return the updated state
+      return { ...prevState, markdown: newMarkdown };
+    });
+  };
+  
   const setImages = (images: Array<{ url: string }>) => setState(prev => ({ ...prev, images }));
 
   return {
