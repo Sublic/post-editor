@@ -6,7 +6,6 @@ import {
   PublicClient,
   WalletClient,
   decodeEventLog,
-  etherUnits,
   parseEther,
   parseEventLogs,
 } from "viem";
@@ -17,6 +16,7 @@ import {
   CreateBucketApprovalResponse,
   decodeObjectFromHexString,
   encodeToHexString,
+  encodeToHex,
 } from "@bnb-chain/greenfield-js-sdk";
 
 type BucketApproveMsg = {
@@ -82,7 +82,7 @@ export async function initMediaResource(
       request.name,
       BigInt(signedMsg.primary_sp_approval.expired_height),
       signedMsg.primary_sp_approval.global_virtual_group_family_id,
-      encodeToHexString(signedMsg.primary_sp_approval.sig),
+      "0x" + encodeToHex(signedMsg.primary_sp_approval.sig),
       request.authors as Array<`0x${string}`>,
     ],
     value: parseEther("0.08"),
@@ -111,7 +111,7 @@ export async function initMediaResource(
       eventName: "MediaResourceCreationCompleted",
       args: { id: mediaId },
     },
-    60000
+    60000 * 5
   );
 
   return mediaId;
