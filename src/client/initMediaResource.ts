@@ -6,6 +6,8 @@ import {
   PublicClient,
   WalletClient,
   decodeEventLog,
+  etherUnits,
+  parseEther,
   parseEventLogs,
 } from "viem";
 import { authenticate } from "./auth";
@@ -83,6 +85,7 @@ export async function initMediaResource(
       encodeToHexString(signedMsg.primary_sp_approval.sig),
       request.authors as Array<`0x${string}`>,
     ],
+    value: parseEther("0.08"),
   });
 
   const receipt = await context.readClient.waitForTransactionReceipt({
