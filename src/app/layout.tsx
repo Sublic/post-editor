@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Layout, Typography } from "antd";
-import { Theme } from "@/providers/theme";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Theme>
-      <AntdRegistry>
-        <html lang="en">
-          <body className={inter.className}>
+    <html lang="en">
+      <body className={inter.className}>
+        <AntdRegistry>
+          <Providers>
             <Layout className="min-h-screen">
               <Header>
                 <Typography.Text strong>Sublic</Typography.Text>
@@ -33,9 +33,9 @@ export default function RootLayout({
                 {children}
               </Content>
             </Layout>
-          </body>
-        </html>
-      </AntdRegistry>
-    </Theme>
+          </Providers>
+        </AntdRegistry>
+      </body>
+    </html>
   );
 }
