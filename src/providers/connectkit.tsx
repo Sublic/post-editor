@@ -4,10 +4,17 @@ import { bscTestnet } from "viem/chains";
 import { WC_ID, GRPC_URL } from "@/config";
 import { WagmiProvider, createConfig } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { injected, walletConnect } from "wagmi/connectors";
 
 const config = createConfig(
   getDefaultConfig({
     appName: "Sublic Admin",
+    connectors: [
+      injected(),
+      walletConnect({
+        projectId: WC_ID,
+      }),
+    ],
     chains: [
       bscTestnet,
       {
