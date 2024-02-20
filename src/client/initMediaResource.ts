@@ -15,15 +15,7 @@ import { waitEvent } from "./event";
 import {
   CreateBucketApprovalResponse,
   decodeObjectFromHexString,
-  encodeToHexString,
-  encodeToHex,
 } from "@bnb-chain/greenfield-js-sdk";
-
-type BucketApproveMsg = {
-  primary_sp_approval: {
-    expired_height: string;
-  };
-};
 
 export async function initMediaResource(
   request: InitMediaRequest,
@@ -72,6 +64,10 @@ export async function initMediaResource(
     approve.body
   ) as CreateBucketApprovalResponse;
 
+  const sigatureHex =
+    "0x" +
+    Buffer.from(signedMsg.primary_sp_approval.sig, "base64").toString("hex");
+
   const txResuponse = await context.viemClient.writeContract({
     address: FACTORY_ADDRESS,
     chain: bscTestnet,
@@ -82,7 +78,7 @@ export async function initMediaResource(
       request.name,
       BigInt(signedMsg.primary_sp_approval.expired_height),
       signedMsg.primary_sp_approval.global_virtual_group_family_id,
-      "0x" + encodeToHex(signedMsg.primary_sp_approval.sig),
+      sigatureHex,
       request.authors as Array<`0x${string}`>,
     ],
     value: parseEther("0.08"),

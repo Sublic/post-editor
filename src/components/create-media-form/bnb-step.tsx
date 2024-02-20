@@ -6,6 +6,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Stages } from "./types";
 import { useInitMediaResource } from "@/hooks/useInitMediaResource";
 import { useEffect } from "react";
+import { BnbSubmitButton } from "./bnb-submit-button";
 
 interface BnbStepProps {
   setIsLoading(v: boolean): void;
@@ -112,9 +113,9 @@ export function BnbStep({ setIsLoading, setNewStage }: BnbStepProps) {
         )}
       </List>
       <Item>
-        <Button type="primary" htmlType="submit">
+        <BnbSubmitButton type="primary" htmlType="submit">
           Create
-        </Button>
+        </BnbSubmitButton>
       </Item>
     </Form>
   );

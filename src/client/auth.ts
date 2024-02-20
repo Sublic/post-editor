@@ -1,10 +1,6 @@
 import { Client } from "viem";
 import { client } from "./client";
 import { GREEN_CHAIN_ID } from "@/config";
-import {
-  IReturnOffChainAuthKeyPairAndUpload,
-  SpResponse,
-} from "@bnb-chain/greenfield-js-sdk";
 
 const STORAGE_AUTH_KEY = "OFFCHAIN_GREENFIELD_SP_AUTH";
 
@@ -33,7 +29,7 @@ export async function authenticate(
       storage.getItem(STORAGE_AUTH_KEY)!
     );
 
-    if (persisted[address].expiration > Date.now()) {
+    if (address in persisted && persisted[address].expiration > Date.now()) {
       return persisted[address].seed;
     }
   }
