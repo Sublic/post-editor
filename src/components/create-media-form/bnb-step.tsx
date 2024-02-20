@@ -2,15 +2,19 @@
 import { App, Button, Form, Input } from "antd";
 import { useAccount } from "wagmi";
 import { isAddress } from "viem";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { Stages } from "./types";
 import { useInitMediaResource } from "@/hooks/useInitMediaResource";
 import { useEffect } from "react";
 import { BnbSubmitButton } from "./bnb-submit-button";
+import { redirect } from "next/navigation";
 
 interface BnbStepProps {
   setIsLoading(v: boolean): void;
-  setNewStage(v: Stages): void;
 }
 
 type FormData = {
@@ -20,17 +24,17 @@ type FormData = {
 
 const { Item, List, ErrorList } = Form;
 
-export function BnbStep({ setIsLoading, setNewStage }: BnbStepProps) {
+export function BnbStep({ setIsLoading }: BnbStepProps) {
   const { address } = useAccount();
   const { notification } = App.useApp();
 
-  const { isPending, isSuccess, isError, error, mutate } =
+  const { isPending, isSuccess, isError, error, mutate, data } =
     useInitMediaResource();
 
   useEffect(() => setIsLoading(isPending || false), [setIsLoading, isPending]);
 
   if (isSuccess) {
-    setNewStage("greenfield");
+    redirect(`/setup/${data}`);
   }
 
   useEffect(() => {
@@ -113,8 +117,14 @@ export function BnbStep({ setIsLoading, setNewStage }: BnbStepProps) {
         )}
       </List>
       <Item>
-        <BnbSubmitButton type="primary" htmlType="submit">
-          Create
+        <BnbSubmitButton type="primary" htmlType="submit" disabled={isPending}>
+          {isPending ? (
+            <>
+              In Progress <LoadingOutlined />
+            </>
+          ) : (
+            "Create"
+          )}
         </BnbSubmitButton>
       </Item>
     </Form>

@@ -6,6 +6,7 @@ import { ContentOrPrompt } from "./content-or-prompt";
 import { FormSteps } from "./steps";
 import { Stages } from "./types";
 import { BnbStep } from "./bnb-step";
+import { redirect } from "next/navigation";
 
 interface CreateMediaFormProps {
   initialStage: Stages;
@@ -20,9 +21,7 @@ export function CreateMediaForm({ initialStage: stage }: CreateMediaFormProps) {
 
     switch (currentStage) {
       case "bnb":
-        return (
-          <BnbStep setIsLoading={setIsloading} setNewStage={setNewStage} />
-        );
+        return <BnbStep setIsLoading={setIsloading} />;
       default:
         return <></>;
     }

@@ -12,7 +12,7 @@ type MediaResourceSpec = {
 };
 
 export function useInitMediaResource(): Partial<
-  UseMutationResult<unknown, Error, MediaResourceSpec>
+  UseMutationResult<`0x${string}`, Error, MediaResourceSpec>
 > {
   const { data: walletClient } = useWalletClient({
     chainId: bscTestnet.id,
