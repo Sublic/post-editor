@@ -1,5 +1,9 @@
 import { PropsWithChildren } from "react";
-import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import {
+  ConnectKitProvider,
+  getDefaultConfig,
+  getDefaultConnectors,
+} from "connectkit";
 import { bscTestnet } from "viem/chains";
 import { WC_ID, GRPC_URL } from "@/config";
 import { WagmiProvider, createConfig } from "wagmi";
@@ -13,6 +17,7 @@ const config = createConfig(
       injected(),
       walletConnect({
         projectId: WC_ID,
+        showQrModal: false,
       }),
     ],
     chains: [
