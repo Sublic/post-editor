@@ -1827,3 +1827,42 @@ export function AdminParams(
     protocolFee: tuple[7],
   };
 }
+
+export function MediaResource(
+  tuple: readonly [
+    `0x${string}`,
+    `0x${string}`,
+    bigint,
+    bigint,
+    bigint,
+    bigint,
+    boolean,
+    boolean,
+    boolean,
+    boolean
+  ]
+): {
+  id: `0x${string}`;
+  owner: `0x${string}`;
+  bucketId: number;
+  subcribersGroupId: number;
+  authorsGroupId: number;
+  unspentEth: bigint;
+  isBucketIdSet: boolean;
+  isSubscribersGroupIdSet: boolean;
+  isAuthorsGroupIdSetSet: boolean;
+  isAuthorsAddedToGroup: boolean;
+} {
+  return {
+    id: tuple[0],
+    owner: tuple[1],
+    bucketId: Number(tuple[2]),
+    subcribersGroupId: Number(tuple[3]),
+    authorsGroupId: Number(tuple[4]),
+    unspentEth: tuple[5],
+    isBucketIdSet: tuple[6],
+    isSubscribersGroupIdSet: tuple[7],
+    isAuthorsGroupIdSetSet: tuple[8],
+    isAuthorsAddedToGroup: tuple[9],
+  };
+}

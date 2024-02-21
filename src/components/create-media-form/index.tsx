@@ -6,13 +6,22 @@ import { ContentOrPrompt } from "./content-or-prompt";
 import { FormSteps } from "./steps";
 import { Stages } from "./types";
 import { BnbStep } from "./bnb-step";
-import { redirect } from "next/navigation";
+import { GreenfieldStep } from "./greenfield-step";
 
-interface CreateMediaFormProps {
-  initialStage: Stages;
-}
+type CreateMediaFormProps =
+  | {
+      initialStage: "bnb";
+      mediaId: undefined;
+    }
+  | {
+      initialStage: Exclude<Stages, "bnb">;
+      mediaId: `0x${string}`;
+    };
 
-export function CreateMediaForm({ initialStage: stage }: CreateMediaFormProps) {
+export function CreateMediaForm({
+  initialStage: stage,
+  mediaId,
+}: CreateMediaFormProps) {
   const [isLoading, setIsloading] = useState(false);
   const [newStage, setNewStage] = useState<null | Stages>(null);
 
@@ -22,10 +31,18 @@ export function CreateMediaForm({ initialStage: stage }: CreateMediaFormProps) {
     switch (currentStage) {
       case "bnb":
         return <BnbStep setIsLoading={setIsloading} />;
+      case "greenfield":
+        return (
+          <GreenfieldStep
+            setIsLoading={setIsloading}
+            nextStage={setNewStage}
+            mediaId={mediaId!}
+          />
+        );
       default:
         return <></>;
     }
-  }, [stage, newStage]);
+  }, [stage, newStage, mediaId]);
 
   return (
     <Space

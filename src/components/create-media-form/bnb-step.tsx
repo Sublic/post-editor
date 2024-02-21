@@ -7,7 +7,6 @@ import {
   MinusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Stages } from "./types";
 import { useInitMediaResource } from "@/hooks/useInitMediaResource";
 import { useEffect } from "react";
 import { BnbSubmitButton } from "./bnb-submit-button";
