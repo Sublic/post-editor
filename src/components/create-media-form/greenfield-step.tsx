@@ -3,6 +3,8 @@ import { Stages } from "./types";
 import { App, Button, Spin } from "antd";
 import { useGrantResourcePermissions } from "@/hooks/useGrantResourcePermissions";
 import { useEffect } from "react";
+import { useTargetChain } from "@/hooks/useTargetChain";
+import { GREEN_CHAIN_ID } from "@/config";
 
 interface GreenfieldStepProps {
   setIsLoading(v: boolean): void;
@@ -18,6 +20,8 @@ export function GreenfieldStep({
   const { isLoading, isSuccess, permissionErrorMessage } =
     useMediaPermissionsCheck(mediaId, false);
 
+  useTargetChain(GREEN_CHAIN_ID);
+
   const { notification } = App.useApp();
 
   const {
@@ -26,6 +30,8 @@ export function GreenfieldStep({
     isSuccess: isMutationSuccess,
     error,
   } = useGrantResourcePermissions(mediaId);
+
+  const [isAppropriateChain, switchChain] = useTargetChain(GREEN_CHAIN_ID);
 
   useEffect(() => {
     if (isMutationSuccess) {
@@ -53,6 +59,14 @@ export function GreenfieldStep({
       <Spin size="large" tip="Checking permissions..." className="mt-10">
         <div />
       </Spin>
+    );
+  }
+
+  if (!isAppropriateChain) {
+    return (
+      <Button type="primary" onClick={() => switchChain()}>
+        Switch to Greenfield
+      </Button>
     );
   }
 

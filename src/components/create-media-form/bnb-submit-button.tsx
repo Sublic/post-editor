@@ -2,6 +2,8 @@ import { useBucketApprove } from "@/hooks/useBucketApprove";
 import { LoadingOutlined } from "@ant-design/icons";
 import { App, Button, ButtonProps } from "antd";
 import { useEffect } from "react";
+import { useTargetChain } from "@/hooks/useTargetChain";
+import { bscTestnet } from "viem/chains";
 
 export function BnbSubmitButton(btnProps: ButtonProps) {
   const {
@@ -14,6 +16,8 @@ export function BnbSubmitButton(btnProps: ButtonProps) {
     grantRoleIsSuccess,
     grantRoleError,
   } = useBucketApprove();
+
+  const [isAppropriateChain, switchChain] = useTargetChain(bscTestnet.id);
 
   const { notification } = App.useApp();
 
@@ -41,6 +45,15 @@ export function BnbSubmitButton(btnProps: ButtonProps) {
       </Button>
     );
   }
+
+  if (!isAppropriateChain) {
+    return (
+      <Button {...btnProps} htmlType="button" onClick={() => switchChain()}>
+        Switch to BNB
+      </Button>
+    );
+  }
+
   if (roleIsLoading) {
     return (
       <Button {...btnProps} htmlType="button" disabled>

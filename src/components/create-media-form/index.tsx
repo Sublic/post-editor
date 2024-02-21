@@ -7,6 +7,7 @@ import { FormSteps } from "./steps";
 import { Stages } from "./types";
 import { BnbStep } from "./bnb-step";
 import { GreenfieldStep } from "./greenfield-step";
+import { DoneStep } from "./done-step";
 
 type CreateMediaFormProps =
   | {
@@ -39,6 +40,8 @@ export function CreateMediaForm({
             mediaId={mediaId!}
           />
         );
+      case "done":
+        return <DoneStep mediaId={mediaId!} />;
       default:
         return <></>;
     }
