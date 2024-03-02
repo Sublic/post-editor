@@ -6,6 +6,7 @@ type PersistedState = {
   brief: string;
   markdown: string;
   images: Array<{ url: string }>;
+  bucket: string;
 };
 
 const defaultPersistedState: PersistedState = {
@@ -13,6 +14,7 @@ const defaultPersistedState: PersistedState = {
   brief: "",
   markdown: "",
   images: [],
+  bucket: "",
 };
 
 const PERSISTENCE_KEY = "SUBLIC_PERSISTED_ARTICLE";
@@ -37,11 +39,12 @@ export function usePersistence(ignorePersisted?: boolean) {
   }, [state]);
 
   // Break down state to individual pieces for convenience
-  const { title, brief, markdown, images } = state;
+  const { title, brief, markdown, images, bucket } = state;
 
   // Update functions for each piece of state
   const setTitle = (title: string) => setState(prev => ({ ...prev, title }));
   const setBrief = (brief: string) => setState(prev => ({ ...prev, brief }));
+  const setBucket = (bucket: string) => setState(prev => ({ ...prev, bucket }));
   const setMarkdown = (markdownInput: string | ((currentMarkdown: string) => string)) => {
     setState((prevState) => {
       // Determine the new markdown based on whether markdownInput is a function or a string
@@ -62,5 +65,7 @@ export function usePersistence(ignorePersisted?: boolean) {
     setImages,
     markdown,
     setMarkdown,
+    bucket,
+    setBucket,
   };
 }

@@ -6,6 +6,7 @@ import { embedImagesIntoMarkdown } from "@/utils/markdown";
 import MDEditor from "@uiw/react-md-editor";
 import { Button, Col, Form, Input, Row, Space, Tabs, Typography } from "antd";
 import { useMemo, useState } from "react";
+import { ConnectKitButton } from "connectkit";
 
 export function Editor() {
   const [selectedTab, selectTab] = useState<"editor" | "article">("editor");
@@ -18,6 +19,8 @@ export function Editor() {
     setMarkdown,
     images,
     setImages,
+    bucket,
+    setBucket,
   } = usePersistence();
 
   const replasedMarkdown = useMemo(
@@ -27,7 +30,9 @@ export function Editor() {
   return (
     <>
       <Typography.Title level={2}>Create your amazing article</Typography.Title>
-
+      <Row justify="center" className="my-10">
+         <ConnectKitButton />
+      </Row>
       <Row className="mt-6">
         <Col offset={4} span={16}>
           <Form layout="vertical" onFinish={() => {}}>
@@ -37,6 +42,12 @@ export function Editor() {
                   <Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item label="Grenfield Bucket" className="w-[340px]">
+                  <Input
+                    value={bucket}
+                    onChange={(e) => setBucket(e.target.value)}
                   />
                 </Form.Item>
               </Col>
@@ -97,7 +108,8 @@ export function Editor() {
                 />
               </Form.Item>
               <Row justify="center">
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit"
+                onClick={}>
                   Publish
                 </Button>
               </Row>
