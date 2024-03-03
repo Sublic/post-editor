@@ -1,13 +1,15 @@
 import { List } from "antd";
 import { ArticlePreview } from "./types";
 import { ArticleRow } from "./article-row";
+import { redirect } from "next/dist/server/api-utils";
 
 interface ArticleListProps {
   items: Array<ArticlePreview>;
   totalCount: number;
+  redirect: (id: string) => void;
 }
 
-export function ArticleList({ items, totalCount }: ArticleListProps) {
+export function ArticleList({ items, totalCount, redirect }: ArticleListProps) {
   return (
     <List
       dataSource={items}
@@ -20,7 +22,7 @@ export function ArticleList({ items, totalCount }: ArticleListProps) {
       }}
       renderItem={(item, i) => (
         <List.Item key={i} className="mb-5">
-          <ArticleRow {...item} />
+          <ArticleRow {...item} redirect={redirect.bind(null, item.id)} />
         </List.Item>
       )}
     />

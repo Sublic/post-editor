@@ -1,8 +1,11 @@
 import { Button, Col, Row, Typography } from "antd";
 import { ArticlePreview } from "./types";
-import { redirect } from "next/navigation";
 
-export function ArticleRow({ description, id, name }: ArticlePreview) {
+export function ArticleRow({
+  description,
+  name,
+  redirect,
+}: ArticlePreview & { redirect: () => void }) {
   return (
     <Row className="text-center">
       <Col span={8} offset={8}>
@@ -14,7 +17,7 @@ export function ArticleRow({ description, id, name }: ArticlePreview) {
         </Typography.Paragraph>
       </Col>
       <Col offset={10} span={4}>
-        <Button type="primary" onClick={() => redirect(`./${id}`)}>
+        <Button type="primary" onClick={() => redirect()}>
           Read
         </Button>
       </Col>
