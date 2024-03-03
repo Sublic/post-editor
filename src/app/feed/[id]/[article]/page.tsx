@@ -1,7 +1,7 @@
 "use client";
 import { Article, ArticleInfo } from "@/components/feed";
 import { useQuery } from "@tanstack/react-query";
-import { Space } from "antd";
+import { Space, Spin } from "antd";
 import { ConnectKitButton } from "connectkit";
 import { setTimeout } from "timers";
 
@@ -36,7 +36,13 @@ export default function Page({
   return (
     <Space className="w-full" direction="vertical" align="center" size="large">
       <ConnectKitButton />
-      {data && <ArticleInfo {...data} />}
+      {isLoading ? (
+        <Spin tip="Loading...">
+          <div />
+        </Spin>
+      ) : (
+        <ArticleInfo {...data!} />
+      )}
     </Space>
   );
 }
