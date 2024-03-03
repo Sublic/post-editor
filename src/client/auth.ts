@@ -34,12 +34,16 @@ export async function authenticate(
     }
   }
   const allSps = await getAllSps();
+  let sps = allSps;
+  if (operatorAddress !== "") {
+    sps = allSps.filter(
+      (sp) => sp.address.toLowerCase() === operatorAddress.toLowerCase()
+    );
+  }
   const offchainAuthRes =
     await client.offchainauth.genOffChainAuthKeyPairAndUpload(
       {
-        sps: allSps.filter(
-          (sp) => sp.address.toLowerCase() === operatorAddress.toLowerCase()
-        ),
+        sps: sps,
         chainId: GREEN_CHAIN_ID,
         expirationMs: 5 * 24 * 60 * 60 * 1000,
         domain: window.location.origin,
