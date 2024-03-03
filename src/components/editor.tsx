@@ -10,7 +10,6 @@ import { useMemo, useState } from "react";
 import { ConnectKitButton } from "connectkit";
 import { ContentOrPrompt } from "@/components/create-media-form/content-or-prompt";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { useTargetChain } from "@/hooks/useTargetChain";
 import { GREEN_CHAIN_ID } from "@/config";
 import Script from 'next/script';
 
@@ -28,7 +27,6 @@ export function Editor() {
     bucket,
     setBucket,
   } = usePersistence();
-  useTargetChain(GREEN_CHAIN_ID);
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient({
     chainId: GREEN_CHAIN_ID
@@ -36,13 +34,16 @@ export function Editor() {
   const readClient = usePublicClient({
     chainId: GREEN_CHAIN_ID
   });
-
+  const replasedMarkdown = useMemo(
+    () => embedImagesIntoMarkdown(markdown, images),
+    [markdown, images]
+  );
   const handleFormSubmit = async () => {
     // Call publishToGreenfield with the current state
     await publishToGreenfield({
       title,
       brief,
-      markdown,
+      markdown: replasedMarkdown,
       images,
       bucket,
       address,
@@ -50,10 +51,7 @@ export function Editor() {
       walletClient,
     });
   };
-  const replasedMarkdown = useMemo(
-    () => embedImagesIntoMarkdown(markdown, images),
-    [markdown, images]
-  );
+
   return (
     <>
       <Typography.Title level={2}>Create your amazing article</Typography.Title>

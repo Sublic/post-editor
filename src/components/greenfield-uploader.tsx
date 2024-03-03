@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Card, Image, Space, Typography } from "antd";
 import { ChangeEvent, useCallback, useRef } from "react";
 import { client } from "@/client/client";
@@ -49,15 +51,15 @@ export async function publishToGreenfield({
         // Upload markdown file
         await uploadFile(markdownFileName, bucket, markdownFile, { user: address, viemClient: walletClient, readClient, window });
 
-        // Upload images
-        for (const image of images) {
-            if (!image.file) {
-                continue; // Skip images without a file
-            }
-            const imageName = image.file.name; // Ensure this gets a valid name from your `image` object
-            const imagePath = `${dirName}/images/${imageName}`;
-            await uploadFile(imagePath, bucket, image.file, { user: address, viemClient: walletClient, readClient, window });
-        }
+        // Upload images deprecated because images are inserted into markdown
+        // for (const image of images) {
+        //     if (!image.file) {
+        //         continue; // Skip images without a file
+        //     }
+        //     const imageName = image.file.name; // Ensure this gets a valid name from your `image` object
+        //     const imagePath = `${dirName}/images/${imageName}`;
+        //     await uploadFile(imagePath, bucket, image.file, { user: address, viemClient: walletClient, readClient, window });
+        // }
 
         console.log('Article published successfully');
     } catch (error) {

@@ -6,7 +6,6 @@ import {
 import * as FileHandle from "@bnb-chain/greenfiled-file-handle";
 import { authenticate } from "./auth";
 
-
 export async function uploadFile(
   objectName: string,
   bucketName: string,
@@ -18,7 +17,6 @@ export async function uploadFile(
     window: Pick<Window, "localStorage" | "location">;
   }
 ): Promise<void> {
-  
   const seed = await authenticate(
     context.user,
     context.viemClient,
