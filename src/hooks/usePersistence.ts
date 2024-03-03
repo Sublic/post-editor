@@ -6,7 +6,6 @@ type PersistedState = {
   brief: string;
   markdown: string;
   images: Array<{ url: string }>;
-  bucket: string;
 };
 
 const defaultPersistedState: PersistedState = {
@@ -14,7 +13,6 @@ const defaultPersistedState: PersistedState = {
   brief: "",
   markdown: "",
   images: [],
-  bucket: "",
 };
 
 const PERSISTENCE_KEY = "SUBLIC_PERSISTED_ARTICLE";
@@ -25,9 +23,10 @@ export function usePersistence(ignorePersisted?: boolean) {
 
   useEffect(() => {
     // This effect runs once on mount, and hence, it's client-side only
-    const fromLocalStorage = PERSISTENCE_KEY in localStorage && !ignorePersisted
-      ? JSON.parse(localStorage.getItem(PERSISTENCE_KEY) || 'null') // Use 'null' to safely handle missing or malformed data
-      : defaultPersistedState;
+    const fromLocalStorage =
+      PERSISTENCE_KEY in localStorage && !ignorePersisted
+        ? JSON.parse(localStorage.getItem(PERSISTENCE_KEY) || "null") // Use 'null' to safely handle missing or malformed data
+        : defaultPersistedState;
 
     setState(fromLocalStorage);
   }, [ignorePersisted]);
@@ -39,22 +38,27 @@ export function usePersistence(ignorePersisted?: boolean) {
   }, [state]);
 
   // Break down state to individual pieces for convenience
-  const { title, brief, markdown, images, bucket } = state;
+  const { title, brief, markdown, images } = state;
 
   // Update functions for each piece of state
-  const setTitle = (title: string) => setState(prev => ({ ...prev, title }));
-  const setBrief = (brief: string) => setState(prev => ({ ...prev, brief }));
-  const setBucket = (bucket: string) => setState(prev => ({ ...prev, bucket }));
-  const setMarkdown = (markdownInput: string | ((currentMarkdown: string) => string)) => {
+  const setTitle = (title: string) => setState((prev) => ({ ...prev, title }));
+  const setBrief = (brief: string) => setState((prev) => ({ ...prev, brief }));
+  const setMarkdown = (
+    markdownInput: string | ((currentMarkdown: string) => string)
+  ) => {
     setState((prevState) => {
       // Determine the new markdown based on whether markdownInput is a function or a string
-      const newMarkdown = typeof markdownInput === 'function' ? markdownInput(prevState.markdown) : markdownInput;
+      const newMarkdown =
+        typeof markdownInput === "function"
+          ? markdownInput(prevState.markdown)
+          : markdownInput;
       // Return the updated state
       return { ...prevState, markdown: newMarkdown };
     });
   };
-  
-  const setImages = (images: Array<{ url: string }>) => setState(prev => ({ ...prev, images }));
+
+  const setImages = (images: Array<{ url: string }>) =>
+    setState((prev) => ({ ...prev, images }));
 
   return {
     title,
@@ -65,7 +69,5 @@ export function usePersistence(ignorePersisted?: boolean) {
     setImages,
     markdown,
     setMarkdown,
-    bucket,
-    setBucket,
   };
 }
