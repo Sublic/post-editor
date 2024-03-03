@@ -47,7 +47,12 @@ const articles: Array<ArticlePreview> = [
 export default function Page({ params }: { params: { id: `0x${string}` } }) {
   const router = useRouter();
   return (
-    <Space className="w-full" direction="vertical" align="center" size="large">
+    <Space
+      className="w-full px-[20%]"
+      direction="vertical"
+      align="center"
+      size="large"
+    >
       <ConnectKitButton />
       <ArticleList
         items={articles}

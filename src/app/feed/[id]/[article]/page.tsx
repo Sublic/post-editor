@@ -34,10 +34,15 @@ export default function Page({
 }) {
   const { isLoading, data } = useArticle(params.id, params.article);
   return (
-    <Space className="w-full" direction="vertical" align="center" size="large">
+    <Space
+      className="w-full px-[10%]"
+      direction="vertical"
+      align="center"
+      size="large"
+    >
       <ConnectKitButton />
       {isLoading ? (
-        <Spin tip="Loading...">
+        <Spin tip="Loading..." className="mt-10">
           <div />
         </Spin>
       ) : (
