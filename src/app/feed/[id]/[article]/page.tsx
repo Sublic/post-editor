@@ -1,8 +1,7 @@
 "use client";
 import { Article, ArticleInfo } from "@/components/feed";
 import { useQuery } from "@tanstack/react-query";
-import { Space, Spin } from "antd";
-import { ConnectKitButton } from "connectkit";
+import { Row, Spin } from "antd";
 
 const articles: Record<string, Omit<Article, "id">> = {
   "123": {
@@ -33,13 +32,7 @@ export default function Page({
 }) {
   const { isLoading, data } = useArticle(params.id, params.article);
   return (
-    <Space
-      className="w-full px-[10%]"
-      direction="vertical"
-      align="center"
-      size="large"
-    >
-      <ConnectKitButton />
+    <Row justify="center" className="px-[10%]">
       {isLoading ? (
         <Spin tip="Loading..." className="mt-10">
           <div />
@@ -47,6 +40,6 @@ export default function Page({
       ) : (
         <ArticleInfo {...data!} />
       )}
-    </Space>
+    </Row>
   );
 }

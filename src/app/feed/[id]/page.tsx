@@ -1,8 +1,7 @@
 "use client";
 
 import { ArticleList, ArticlePreview } from "@/components/feed";
-import { Space } from "antd";
-import { ConnectKitButton } from "connectkit";
+import { Row } from "antd";
 import { useRouter } from "next/navigation";
 
 const articles: Array<ArticlePreview> = [
@@ -47,18 +46,12 @@ const articles: Array<ArticlePreview> = [
 export default function Page({ params }: { params: { id: `0x${string}` } }) {
   const router = useRouter();
   return (
-    <Space
-      className="w-full px-[20%]"
-      direction="vertical"
-      align="center"
-      size="large"
-    >
-      <ConnectKitButton />
+    <Row justify="center" className="px-[20%]">
       <ArticleList
         items={articles}
         totalCount={13}
         redirect={(id) => router.push(`/feed/${params.id}/${id}/`)}
       />
-    </Space>
+    </Row>
   );
 }

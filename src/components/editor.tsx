@@ -11,7 +11,7 @@ import { ConnectKitButton } from "connectkit";
 import { ContentOrPrompt } from "@/components/create-media-form/content-or-prompt";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { GREEN_CHAIN_ID } from "@/config";
-import Script from 'next/script';
+import Script from "next/script";
 
 export function Editor() {
   const [selectedTab, selectTab] = useState<"editor" | "article">("editor");
@@ -29,10 +29,10 @@ export function Editor() {
   } = usePersistence();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient({
-    chainId: GREEN_CHAIN_ID
+    chainId: GREEN_CHAIN_ID,
   });
   const readClient = usePublicClient({
-    chainId: GREEN_CHAIN_ID
+    chainId: GREEN_CHAIN_ID,
   });
   const replasedMarkdown = useMemo(
     () => embedImagesIntoMarkdown(markdown, images),
@@ -55,23 +55,24 @@ export function Editor() {
   return (
     <>
       <Typography.Title level={2}>Create your amazing article</Typography.Title>
-      <Script src="https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/browser/umd/index.js" strategy="beforeInteractive"></Script>
-      <Script id="set-wasm-path"
+      <Script
+        src="https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/browser/umd/index.js"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        id="set-wasm-path"
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `window.__PUBLIC_FILE_HANDLE_WASM_PATH__ = 'https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/node/file-handle.wasm'`,
         }}
       ></Script>
-      <Row justify="center" className="my-10">
-         <ConnectKitButton />
-      </Row>
       <ContentOrPrompt>
         <Row className="mt-6">
           <Col offset={4} span={16}>
             <Form layout="vertical" onFinish={handleFormSubmit}>
               <Space direction="vertical" className="w-full">
                 <Col offset={4} span={10}>
-                <Form.Item label="Grenfield Bucket" className="w-[340px]">
+                  <Form.Item label="Grenfield Bucket" className="w-[340px]">
                     <Input
                       value={bucket}
                       onChange={(e) => setBucket(e.target.value)}
@@ -134,16 +135,17 @@ export function Editor() {
                     values={images}
                     onChange={setImages}
                     onInsert={(imageIndex) => {
-                      setMarkdown(currentMarkdown => 
-                        `${currentMarkdown}<img src="images:${imageIndex}" width="100" height="100" alt="image">`
+                      setMarkdown(
+                        (currentMarkdown) =>
+                          `${currentMarkdown}<img src="images:${imageIndex}" width="100" height="100" alt="image">`
                       );
                     }}
                   />
                 </Form.Item>
                 <Row justify="center">
-                <Button type="primary" htmlType="submit">
-                  Publish
-                </Button>
+                  <Button type="primary" htmlType="submit">
+                    Publish
+                  </Button>
                 </Row>
               </Space>
             </Form>

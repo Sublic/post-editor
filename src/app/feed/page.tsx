@@ -8,16 +8,11 @@ import { useRouter } from "next/navigation";
 export default function Page() {
   const router = useRouter();
   return (
-    <>
-      <Row justify="center">
-        <ConnectKitButton />
-      </Row>
-      <Row justify="center" className="mt-10 px-[20%]">
-        <MediaList
-          write={(id) => router.push(`/editor/${id}`)}
-          read={(id) => router.push(`/feed/${id}`)}
-        />
-      </Row>
-    </>
+    <Row justify="center" className="mt-10 px-[20%]">
+      <MediaList
+        write={(id) => router.push(`/editor/${id}`)}
+        read={(id) => router.push(`/feed/${id}`)}
+      />
+    </Row>
   );
 }

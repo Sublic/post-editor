@@ -12,6 +12,7 @@ export const Theme = ({ children }: PropsWithChildren) => (
           Layout: {
             bodyBg: "transparent",
             headerBg: "#f0b90b",
+            siderBg: "transparent",
           },
           Menu: {
             colorBgContainer: "transparent",
