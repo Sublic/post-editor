@@ -12,6 +12,7 @@ import { ContentOrPrompt } from "@/components/create-media-form/content-or-promp
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { useTargetChain } from "@/hooks/useTargetChain";
 import { GREEN_CHAIN_ID } from "@/config";
+import Script from 'next/script';
 
 export function Editor() {
   const [selectedTab, selectTab] = useState<"editor" | "article">("editor");
@@ -56,12 +57,13 @@ export function Editor() {
   return (
     <>
       <Typography.Title level={2}>Create your amazing article</Typography.Title>
-      <script src="https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/browser/umd/index.js"></script>
-      <script
+      <Script src="https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/browser/umd/index.js" strategy="beforeInteractive"></Script>
+      <Script id="set-wasm-path"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `window.__PUBLIC_FILE_HANDLE_WASM_PATH__ = 'https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/node/file-handle.wasm'`,
         }}
-      ></script>
+      ></Script>
       <Row justify="center" className="my-10">
          <ConnectKitButton />
       </Row>

@@ -82,7 +82,7 @@ export async function uploadFile(
       {
           bucketName: bucketName,
           objectName: objectName,
-          body: data,
+          body: file,
           txnHash: res.transactionHash,
       },
       {
