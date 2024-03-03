@@ -7,13 +7,17 @@ import { embedImagesIntoMarkdown } from "@/utils/markdown";
 import MDEditor from "@uiw/react-md-editor";
 import { Button, Col, Form, Input, Row, Space, Tabs, Typography } from "antd";
 import { useMemo, useState } from "react";
-import { ConnectKitButton } from "connectkit";
 import { ContentOrPrompt } from "@/components/create-media-form/content-or-prompt";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { GREEN_CHAIN_ID } from "@/config";
 import Script from "next/script";
+import { bscTestnet } from "viem/chains";
 
-export function Editor() {
+interface EditorProps {
+  mediaId: `0x${string}`;
+}
+
+export function Editor({ mediaId }: EditorProps) {
   const [selectedTab, selectTab] = useState<"editor" | "article">("editor");
   const {
     title,
@@ -24,8 +28,6 @@ export function Editor() {
     setMarkdown,
     images,
     setImages,
-    bucket,
-    setBucket,
   } = usePersistence();
   const { address } = useAccount();
   const { data: walletClient } = useWalletClient({
@@ -33,7 +35,10 @@ export function Editor() {
   });
   const readClient = usePublicClient({
     chainId: GREEN_CHAIN_ID,
-  });
+  })!;
+  const bscReadClient = usePublicClient({
+    chainId: bscTestnet.id,
+  })!;
   const replasedMarkdown = useMemo(
     () => embedImagesIntoMarkdown(markdown, images),
     [markdown, images]
@@ -45,10 +50,11 @@ export function Editor() {
       brief,
       markdown: replasedMarkdown,
       images,
-      bucket,
+      mediaId,
       address,
       readClient,
-      walletClient,
+      bscReadClient,
+      walletClient: walletClient!,
     });
   };
 
@@ -72,12 +78,6 @@ export function Editor() {
             <Form layout="vertical" onFinish={handleFormSubmit}>
               <Space direction="vertical" className="w-full">
                 <Col offset={4} span={10}>
-                  <Form.Item label="Grenfield Bucket" className="w-[340px]">
-                    <Input
-                      value={bucket}
-                      onChange={(e) => setBucket(e.target.value)}
-                    />
-                  </Form.Item>
                   <Form.Item label="Title" className="w-[340px]">
                     <Input
                       value={title}
