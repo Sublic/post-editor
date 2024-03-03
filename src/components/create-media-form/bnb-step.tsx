@@ -11,6 +11,7 @@ import { useInitMediaResource } from "@/hooks/useInitMediaResource";
 import { useEffect } from "react";
 import { BnbSubmitButton } from "./bnb-submit-button";
 import { redirect } from "next/navigation";
+import { BnbWaitPropmt } from "./bnb-wait-prompt";
 
 interface BnbStepProps {
   setIsLoading(v: boolean): void;
@@ -53,6 +54,10 @@ export function BnbStep({ setIsLoading }: BnbStepProps) {
       });
     }
   };
+
+  if (isPending) {
+    return <BnbWaitPropmt />;
+  }
 
   return (
     <Form layout="vertical" onFinish={onFinish}>
@@ -116,14 +121,8 @@ export function BnbStep({ setIsLoading }: BnbStepProps) {
         )}
       </List>
       <Item>
-        <BnbSubmitButton type="primary" htmlType="submit" disabled={isPending}>
-          {isPending ? (
-            <>
-              In Progress <LoadingOutlined />
-            </>
-          ) : (
-            "Create"
-          )}
+        <BnbSubmitButton type="primary" htmlType="submit">
+          Create
         </BnbSubmitButton>
       </Item>
     </Form>
