@@ -1753,12 +1753,12 @@ const abi = [
         type: "string",
       },
     ],
-    name: "usedNames",
+    name: "mediaIds",
     outputs: [
       {
-        internalType: "bool",
+        internalType: "bytes32",
         name: "",
-        type: "bool",
+        type: "bytes32",
       },
     ],
     stateMutability: "view",

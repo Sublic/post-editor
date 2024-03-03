@@ -3,7 +3,6 @@ import { Article, ArticleInfo } from "@/components/feed";
 import { useQuery } from "@tanstack/react-query";
 import { Space, Spin } from "antd";
 import { ConnectKitButton } from "connectkit";
-import { setTimeout } from "timers";
 
 const articles: Record<string, Omit<Article, "id">> = {
   "123": {
