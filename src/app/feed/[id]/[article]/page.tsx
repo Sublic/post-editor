@@ -1,5 +1,6 @@
 "use client";
 import { Article, ArticleInfo } from "@/components/feed";
+import { SubscriptionGate } from "@/components/subscription-gate";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Spin } from "antd";
 
@@ -33,13 +34,15 @@ export default function Page({
   const { isLoading, data } = useArticle(params.id, params.article);
   return (
     <Row justify="center" className="px-[10%]">
-      {isLoading ? (
-        <Spin tip="Loading..." className="mt-10">
-          <div />
-        </Spin>
-      ) : (
-        <ArticleInfo {...data!} />
-      )}
+      <SubscriptionGate mediaId={params.id}>
+        {isLoading ? (
+          <Spin tip="Loading..." className="mt-10">
+            <div />
+          </Spin>
+        ) : (
+          <ArticleInfo {...data!} />
+        )}
+      </SubscriptionGate>
     </Row>
   );
 }

@@ -1,7 +1,10 @@
 "use client";
 
 import { ArticleList, ArticlePreview } from "@/components/feed";
-import { Row } from "antd";
+import { SubscriptionGate } from "@/components/subscription-gate";
+import { useAccount } from "@/hooks/useAccount";
+import { useCheckSubscription } from "@/hooks/useCheckSubscription";
+import { Row, Space, Spin, Typography } from "antd";
 import { useRouter } from "next/navigation";
 
 const articles: Array<ArticlePreview> = [
@@ -47,11 +50,13 @@ export default function Page({ params }: { params: { id: `0x${string}` } }) {
   const router = useRouter();
   return (
     <Row justify="center" className="px-[20%]">
-      <ArticleList
-        items={articles}
-        totalCount={13}
-        redirect={(id) => router.push(`/feed/${params.id}/${id}/`)}
-      />
+      <SubscriptionGate mediaId={params.id}>
+        <ArticleList
+          items={articles}
+          totalCount={13}
+          redirect={(id) => router.push(`/feed/${params.id}/${id}/`)}
+        />
+      </SubscriptionGate>
     </Row>
   );
 }
