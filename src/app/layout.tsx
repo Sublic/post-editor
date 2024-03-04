@@ -12,6 +12,7 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+      <Script
+        src="https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/browser/umd/index.js"
+        strategy="beforeInteractive"
+      ></Script>
+      <Script
+        id="set-wasm-path"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `window.__PUBLIC_FILE_HANDLE_WASM_PATH__ = 'https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/node/file-handle.wasm'`,
+        }}
+      ></Script>
         <AntdRegistry>
           <Providers>
             <Layout>

@@ -61,17 +61,6 @@ export function Editor({ mediaId }: EditorProps) {
   return (
     <>
       <Typography.Title level={2}>Create your amazing article</Typography.Title>
-      <Script
-        src="https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/browser/umd/index.js"
-        strategy="beforeInteractive"
-      ></Script>
-      <Script
-        id="set-wasm-path"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `window.__PUBLIC_FILE_HANDLE_WASM_PATH__ = 'https://unpkg.com/@bnb-chain/greenfiled-file-handle@0.2.1/dist/node/file-handle.wasm'`,
-        }}
-      ></Script>
       <ContentOrPrompt>
         <Row className="mt-6">
           <Col offset={4} span={16}>
