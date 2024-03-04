@@ -17,8 +17,6 @@ import {
   decodeObjectFromHexString,
 } from "@bnb-chain/greenfield-js-sdk";
 
-import { createSubscriptionToken } from "@/client/sublicTokenActions";
-
 export async function initMediaResource(
   request: InitMediaRequest,
   context: {
@@ -28,14 +26,6 @@ export async function initMediaResource(
     window: Pick<Window, "localStorage" | "location">;
   }
 ): Promise<`0x${string}`> {
-
-  // First we create necessary new token. TODO: make it prettier
-  const [tokenAddress, poolAddress] = await createSubscriptionToken(
-    request.name,
-    request.name,
-    context
-  );
-
   const { spAddress, readQuotaToCharge } = AdminParams(
     await context.readClient.readContract({
       address: FACTORY_ADDRESS,
@@ -90,7 +80,7 @@ export async function initMediaResource(
       signedMsg.primary_sp_approval.global_virtual_group_family_id,
       sigatureHex,
       request.authors as Array<`0x${string}`>,
-      tokenAddress,
+      request.tokenSymbol,
     ],
     value: parseEther("0.08"),
   });

@@ -8,7 +8,6 @@ const INIT_ONCHAIN_MEDIA_RESOURCE_MUTATION_KEY = "INIT_ONCHAIN_MEDIA_RESOURCE";
 
 type MediaResourceSpec = {
   name: string;
-  tokenName: string;
   tokenSymbol: string;
   authors: Array<`0x${string}`>;
 };

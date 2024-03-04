@@ -19,7 +19,6 @@ interface BnbStepProps {
 
 type FormData = {
   resourceName: string;
-  tokenName: string;
   tokenSymbol: string;
   authors: Array<`0x${string}`>;
 };
@@ -48,11 +47,10 @@ export function BnbStep({ setIsLoading }: BnbStepProps) {
     }
   }, [notification, isError, error]);
 
-  const onFinish = ({ resourceName, tokenName, tokenSymbol, authors }: FormData) => {
+  const onFinish = ({ resourceName, tokenSymbol, authors }: FormData) => {
     if (mutate) {
       mutate({
         name: resourceName,
-        tokenName: tokenName,
         tokenSymbol: tokenSymbol,
         authors,
       });
@@ -67,9 +65,6 @@ export function BnbStep({ setIsLoading }: BnbStepProps) {
     <Form layout="vertical" onFinish={onFinish}>
       <Item label="Name" name="resourceName">
         <Input minLength={5} maxLength={50} />
-      </Item>
-      <Item label="Token Name" name="tokenName">
-        <Input minLength={2} maxLength={50} />
       </Item>
       <Item label="Token Symbol" name="tokenSymbol">
         <Input minLength={2} maxLength={50} />

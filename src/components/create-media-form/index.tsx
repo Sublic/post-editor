@@ -12,15 +12,18 @@ type CreateMediaFormProps =
   | {
       initialStage: "bnb";
       mediaId: undefined;
+      route: (url: string) => void;
     }
   | {
       initialStage: Exclude<Stages, "bnb">;
       mediaId: `0x${string}`;
+      route: (url: string) => void;
     };
 
 export function CreateMediaForm({
   initialStage: stage,
   mediaId,
+  route,
 }: CreateMediaFormProps) {
   const [isLoading, setIsloading] = useState(false);
   const [newStage, setNewStage] = useState<null | Stages>(null);
@@ -29,8 +32,6 @@ export function CreateMediaForm({
     const currentStage = newStage || stage;
 
     switch (currentStage) {
-      case "create-token":
-        return <BnbStep setIsLoading={setIsloading} />;
       case "bnb":
         return <BnbStep setIsLoading={setIsloading} />;
       case "greenfield":
@@ -42,7 +43,12 @@ export function CreateMediaForm({
           />
         );
       case "done":
-        return <DoneStep mediaId={mediaId!} />;
+        return (
+          <DoneStep
+            mediaId={mediaId!}
+            toMediaEditor={() => route(`/editor/${mediaId!}`)}
+          />
+        );
       default:
         return <></>;
     }
