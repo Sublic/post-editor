@@ -29,13 +29,13 @@ export default function Page({ params }: { params: { id: `0x${string}` } }) {
   if (error) return <Typography.Text type="danger">{error}</Typography.Text>;
   return (
     <Row justify="center" className="px-[20%]">
-      {/* <SubscriptionGate mediaId={params.id}> */}
+      <SubscriptionGate mediaId={params.id}>
         <ArticleList
           items={articles}
           totalCount={articles.length}
           redirect={(id) => router.push(`/feed/${params.id}/${id}/`)}
         />
-      {/* </SubscriptionGate> */}
+      </SubscriptionGate>
     </Row>
   );
 }

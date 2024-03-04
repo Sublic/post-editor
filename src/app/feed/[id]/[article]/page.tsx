@@ -55,7 +55,7 @@ export default function Page({
   const { isLoading, data } = useArticle(params.id, params.article, address, walletClient, bscReadClient);
   return (
     <Row justify="center" className="px-[10%]">
-      {/* <SubscriptionGate mediaId={params.id}> */}
+      <SubscriptionGate mediaId={params.id}>
         {isLoading ? (
           <Spin tip="Loading..." className="mt-10">
             <div />
@@ -63,7 +63,7 @@ export default function Page({
         ) : (
           <ArticleInfo {...data!} />
         )}
-      {/* </SubscriptionGate> */}
+      </SubscriptionGate>
     </Row>
   );
 }
