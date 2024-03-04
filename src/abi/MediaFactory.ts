@@ -1243,6 +1243,11 @@ const abi = [
         name: "authors",
         type: "address[]",
       },
+      {
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
+      },
     ],
     name: "createMediaResource",
     outputs: [],
