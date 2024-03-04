@@ -43,7 +43,7 @@ export async function getSublicGroups(
     allGroups.body?.GfSpGetUserGroupsResponse?.Groups?.filter(
       (group) =>
         group.Group.GroupName.startsWith(PREFIX) &&
-        group.Group.Owner === FACTORY_ADDRESS
+        group.Group.Owner.toLowerCase() === FACTORY_ADDRESS.toLowerCase()
     )
       ?.map((group) => ({
         name: group.Group.GroupName,

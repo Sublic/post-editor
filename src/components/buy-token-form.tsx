@@ -1,6 +1,6 @@
 import { useAccount } from "@/hooks/useAccount";
 import { useApproveToken } from "@/hooks/useApproveToken";
-import { useBuyToken } from "@/hooks/useBuyToken";
+import { useBuySubscriptionToken } from "@/hooks/useBuySubscriptionToken";
 import { useMediaTokenAddress } from "@/hooks/useMediaTokenAddress";
 import { useUSDCBalance } from "@/hooks/useUSDCBalance";
 import {
@@ -35,7 +35,7 @@ export function BuyTokenForm({ mediaId }: BuyTokenFormProps) {
     allowance,
   } = useUSDCBalance(address);
 
-  const { buy: writeBuy, ...buyStatus } = useBuyToken(tokenAddress);
+  const { buy: writeBuy, ...buyStatus } = useBuySubscriptionToken(mediaId);
 
   const { approve: writeApprove, ...approveStatus } =
     useApproveToken(usdcAddress);

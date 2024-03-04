@@ -1,4 +1,4 @@
-import { SWAPPER_ADDRESS } from "@/config";
+import { TOKEN_FACTORY_ADDRESS } from "@/config";
 import { bscTestnet } from "viem/chains";
 import { useWriteContract } from "wagmi";
 import BigNumber from "bignumber.js";
@@ -18,7 +18,7 @@ export function useApproveToken(tokenAddress?: `0x${string}`) {
         address: tokenAddress,
         abi: erc20Abi,
         functionName: "approve",
-        args: [SWAPPER_ADDRESS, BigInt(amount.toString())],
+        args: [TOKEN_FACTORY_ADDRESS, BigInt(amount.toString())],
       });
     },
   };

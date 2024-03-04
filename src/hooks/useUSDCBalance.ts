@@ -1,5 +1,5 @@
-import { SWAPPER_ADDRESS } from "@/config";
-import SwapperAbi from "@/abi/Swapper";
+import { TOKEN_FACTORY_ADDRESS } from "@/config";
+import SublicTokenFactoryAbi from "@/abi/SublicTokenFactory";
 import { bscTestnet } from "viem/chains";
 import { useBalance, useReadContract } from "wagmi";
 import { erc20Abi } from "viem";
@@ -7,8 +7,8 @@ import { erc20Abi } from "viem";
 export function useUSDCBalance(address?: `0x${string}`) {
   const { data: usdcAddress } = useReadContract({
     chainId: bscTestnet.id,
-    address: SWAPPER_ADDRESS,
-    abi: SwapperAbi,
+    address: TOKEN_FACTORY_ADDRESS,
+    abi: SublicTokenFactoryAbi,
     functionName: "USDC",
   });
 
@@ -26,7 +26,7 @@ export function useUSDCBalance(address?: `0x${string}`) {
     address: usdcAddress,
     chainId: bscTestnet.id,
     functionName: "allowance",
-    args: address ? [address, SWAPPER_ADDRESS] : undefined,
+    args: address ? [address, TOKEN_FACTORY_ADDRESS] : undefined,
     query: {
       refetchInterval: 2000,
     },
