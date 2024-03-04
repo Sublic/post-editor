@@ -14,7 +14,6 @@ export async function downloadFile(
     window: Pick<Window, "localStorage" | "location">;
   }
 ): Promise<string> {
-    console.log("!!!", context.viemClient);
     const seed = await authenticate(
     context.user,
     context.viemClient,
