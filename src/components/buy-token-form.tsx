@@ -13,7 +13,9 @@ import {
   Typography,
 } from "antd";
 import BigNumber from "bignumber.js";
+import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
+import { zeroAddress } from "viem";
 
 interface BuyTokenFormProps {
   mediaId: `0x${string}`;
@@ -84,6 +86,10 @@ export function BuyTokenForm({ mediaId }: BuyTokenFormProps) {
   const approve = () => {
     writeApprove(amountToBuy.multipliedBy(BigNumber(10).pow(decimals || 6)));
   };
+
+  if (tokenAddress === zeroAddress) {
+    notFound();
+  }
 
   return (
     <Form layout="vertical">
