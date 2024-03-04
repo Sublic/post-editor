@@ -23,7 +23,7 @@ export default function Page({ params }: { params: { id: `0x${string}` } }) {
   const bscReadClient = usePublicClient({
     chainId: bscTestnet.id,
   })!;
-  const { articles, isLoading, error } = useGreenfieldLoadArticles(params.id, address, walletClient, readClient, bscReadClient);
+  const { articles, isLoading, error, articlesMap } = useGreenfieldLoadArticles(params.id, address, walletClient, readClient, bscReadClient);
   
   if (isLoading) return <Spin />;
   if (error) return <Typography.Text type="danger">{error}</Typography.Text>;

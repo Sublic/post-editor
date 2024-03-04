@@ -3,6 +3,11 @@ import { Article, ArticleInfo } from "@/components/feed";
 import { SubscriptionGate } from "@/components/subscription-gate";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Spin } from "antd";
+import {downloadFile} from "@/client/greenfieldDownloadFile";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { GREEN_CHAIN_ID } from "@/config";
+import { bscTestnet } from "viem/chains";
+import { getBucketFromMediaId } from "@/client/getBucketFromMediaId";
 
 const articles: Record<string, Omit<Article, "id">> = {
   "123": {
@@ -13,15 +18,33 @@ const articles: Record<string, Omit<Article, "id">> = {
   },
 };
 
-function useArticle(mediaId: string, preview: string) {
+function useArticle(mediaId: string, preview: string, address: `0x${string}` | undefined, walletClient: any, bscReadClient: any) {
   return useQuery<Article, Error, Article, [string, string, string]>({
     queryKey: ["ARTICLE_LOAD", mediaId, preview],
     queryFn: async ({ queryKey }) => {
-      if (queryKey[2] in articles) {
-        const articleId = queryKey[2];
-        return { ...articles[articleId], id: articleId };
+      const { bucketInfo } = await getBucketFromMediaId(mediaId, {
+        readClient: bscReadClient,
+      });
+      console.log(mediaId, preview, queryKey, bucketInfo.bucketName, address, walletClient, window);
+      const name_description = await downloadFile(`${queryKey[2]}/name_description.txt`,bucketInfo.bucketName,{
+        user: address,
+        viemClient: walletClient,
+        window,
+      });
+      const parts = name_description.split("\n----\n");
+      const name = parts[0].trim();
+      const description = parts[1].trim();
+      const file = await downloadFile(`${queryKey[2]}/content.md`,bucketInfo.bucketName,{
+        user: address,
+        viemClient: walletClient,
+        window,
+      });
+      console.log(file);
+      return {
+        description: description,
+        name: name,
+        text: file,
       }
-      throw new Error("Article not found");
     },
   });
 }
@@ -31,10 +54,17 @@ export default function Page({
 }: {
   params: { id: `0x${string}`; article: string };
 }) {
-  const { isLoading, data } = useArticle(params.id, params.article);
+  const { address } = useAccount();
+  const { data: walletClient } = useWalletClient({
+    chainId: GREEN_CHAIN_ID,
+  });
+  const bscReadClient = usePublicClient({
+    chainId: bscTestnet.id,
+  })!;
+  const { isLoading, data } = useArticle(params.id, params.article, address, walletClient, bscReadClient);
   return (
     <Row justify="center" className="px-[10%]">
-      <SubscriptionGate mediaId={params.id}>
+      {/* <SubscriptionGate mediaId={params.id}> */}
         {isLoading ? (
           <Spin tip="Loading..." className="mt-10">
             <div />
@@ -42,7 +72,7 @@ export default function Page({
         ) : (
           <ArticleInfo {...data!} />
         )}
-      </SubscriptionGate>
+      {/* </SubscriptionGate> */}
     </Row>
   );
 }
