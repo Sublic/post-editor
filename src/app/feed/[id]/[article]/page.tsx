@@ -9,15 +9,20 @@ import { GREEN_CHAIN_ID } from "@/config";
 import { bscTestnet } from "viem/chains";
 import { getBucketFromMediaId } from "@/client/getBucketFromMediaId";
 
-function useArticle(mediaId: string, preview: string, address: `0x${string}` | undefined, walletClient: any, bscReadClient: any) {
+function useArticle(mediaId: `0x${string}`, preview: string, address: `0x${string}` | undefined, walletClient: any, bscReadClient: any) {
   return useQuery<Article, Error, Article, [string, string, string]>({
     queryKey: ["ARTICLE_LOAD", mediaId, preview],
     queryFn: async ({ queryKey }) => {
       const { bucketInfo } = await getBucketFromMediaId(mediaId, {
         readClient: bscReadClient,
       });
-      console.log(mediaId, preview, queryKey, bucketInfo.bucketName, address, walletClient, window);
-      const name_description = await downloadFile(`${queryKey[2]}/name_description.txt`,bucketInfo.bucketName,{
+      if (!bucketInfo?.bucketName) {
+        throw new Error("Failed to fetch bucket info");
+      }
+      if (!address) {
+        throw new Error("Address is not provided");
+      }
+      const name_description = await downloadFile(`${queryKey[2]}/name_description.txt`, bucketInfo.bucketName,{
         user: address,
         viemClient: walletClient,
         window,
@@ -25,13 +30,14 @@ function useArticle(mediaId: string, preview: string, address: `0x${string}` | u
       const parts = name_description.split("\n----\n");
       const name = parts[0].trim();
       const description = parts[1].trim();
-      const file = await downloadFile(`${queryKey[2]}/content.md`,bucketInfo.bucketName,{
+      const file = await downloadFile(`${queryKey[2]}/content.md`, bucketInfo.bucketName,{
         user: address,
         viemClient: walletClient,
         window,
       });
-      console.log(file);
+
       return {
+        id: queryKey[2],
         description: description,
         name: name,
         text: file,

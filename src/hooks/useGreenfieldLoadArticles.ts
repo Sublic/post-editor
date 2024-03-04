@@ -5,16 +5,27 @@ import { ArticleList, ArticlePreview } from "@/components/feed";
 import { getBucketFromMediaId } from "@/client/getBucketFromMediaId";
 import {downloadFile} from "@/client/greenfieldDownloadFile";
 
-export function useGreenfieldLoadArticles(mediaId: string, address: string, walletClient: any, readClient: any, bscReadClient: any) {
-    const [articles, setArticles] = useState([]);
-    const [articlesMap, setArticlesMap] = useState({});
+interface ArticleMapEntry {
+    id: string;
+    name: string;
+    description: string;
+    content: string;
+  }
+type ArticlesMap = { [key: string]: ArticleMapEntry };
+
+export function useGreenfieldLoadArticles(mediaId: `0x${string}`, address: `0x${string}` | undefined, walletClient: any, readClient: any, bscReadClient: any) {
+    const [articles, setArticles] = useState<Array<ArticlePreview>>([]);
+    const [articlesMap, setArticlesMap] = useState<ArticlesMap>({});
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     useEffect(() => {
     const loadArticles = async () => {
         setIsLoading(true);
         setError(null);
         try {
+            if (!address) {
+                throw new Error("Address is not provided");
+            }
             const { bucketInfo } = await getBucketFromMediaId(mediaId, {
                 readClient: bscReadClient,
             });
@@ -22,7 +33,7 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
             if (!bucketInfo?.bucketName) {
                 throw new Error("Failed to fetch bucket info");
             }
-            console.log(address, bucketInfo.bucketName, mediaId);
+
             let bucketName = bucketInfo.bucketName;
             const spInfo = await selectSp();
 
@@ -39,7 +50,7 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
                 const { ObjectName, BucketName } = obj.ObjectInfo;
                 const [uuid] = ObjectName.split('/');
                 if (!articlesMap[uuid]) {
-                    articlesMap[uuid] = { id: uuid, nameDescription: '', content: '' };
+                    articlesMap[uuid] = { id: uuid, name: '', content: '', description: ''};
                 }
                 if (ObjectName.endsWith('name_description.txt')) {
                     let obj = await downloadFile(ObjectName,bucketName,{
@@ -55,7 +66,7 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
                     articlesMap[uuid].content = `${ObjectName}`;
                 }
             }
-            const fetchedArticles: any[] = Object.values(articlesMap).map((article: any) => {
+            const fetchedArticles: Array<ArticlePreview> = Object.values(articlesMap).map((article: ArticlePreview) => {
                 return {
                     id: article.id,
                     name: article.name,
@@ -65,8 +76,12 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
 
             setArticles(fetchedArticles);
             setArticlesMap(articlesMap);
-        } catch (err) {
-        setError(err.message);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('An unknown error occurred');
+            }
         } finally {
         setIsLoading(false);
         }
@@ -76,7 +91,6 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
         loadArticles();
     }
     }, [address]);
-    console.log(articlesMap);
     return { articles, isLoading, error, articlesMap};
 
 }
