@@ -3,7 +3,7 @@ import { client, selectSp } from "@/client/client";
 import { useEffect, useState } from "react";
 import { ArticleList, ArticlePreview } from "@/components/feed";
 import { getBucketFromMediaId } from "@/client/getBucketFromMediaId";
-import { authenticate } from "@/client/auth";
+import {downloadFile} from "@/client/greenfieldDownloadFile";
 
 export function useGreenfieldLoadArticles(mediaId: string, address: string, walletClient: any, readClient: any, bscReadClient: any) {
     const [articles, setArticles] = useState([]);
@@ -22,12 +22,6 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
             if (!bucketInfo?.bucketName) {
                 throw new Error("Failed to fetch bucket info");
             }
-            const seed = await authenticate(
-                address,
-                walletClient,
-                window.localStorage,
-                ""
-            );
             console.log(address, bucketInfo.bucketName, mediaId);
             let bucketName = bucketInfo.bucketName;
             const spInfo = await selectSp();
@@ -48,18 +42,12 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
                     articlesMap[uuid] = { id: uuid, nameDescription: '', content: '' };
                 }
                 if (ObjectName.endsWith('name_description.txt')) {
-                    let obj = await client.object.getObject({
-                        bucketName: bucketName,
-                        objectName: ObjectName,
-                    },
-                    {
-                        type: 'EDDSA',
-                        address,
-                        domain: window.location.origin,
-                        seed: seed,
-                    });
-                    const text = await obj.body.text();
-                    const parts = text.split("\n----\n");
+                    let obj = await downloadFile(ObjectName,bucketName,{
+                        user: address,
+                        viemClient: walletClient,
+                        window,
+                      });
+                    const parts = obj.split("\n----\n");
                     articlesMap[uuid].name = parts[0].trim();
                     articlesMap[uuid].description = parts[1].trim();
                 }
