@@ -29,6 +29,8 @@ export function CreateMediaForm({
     const currentStage = newStage || stage;
 
     switch (currentStage) {
+      case "create-token":
+        return <BnbStep setIsLoading={setIsloading} />;
       case "bnb":
         return <BnbStep setIsLoading={setIsloading} />;
       case "greenfield":

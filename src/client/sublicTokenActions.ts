@@ -22,13 +22,6 @@ export async function createSubscriptionToken(
   }
 ): Promise<[`0x${string}`, `0x${string}`]> {
 
-  const seed = await authenticate(
-    context.user,
-    context.viemClient,
-    context.window.localStorage,
-    ""
-  );
-
   const txResuponse = await context.viemClient.writeContract({
     address: TOKEN_FACTORY_ADDRESS,
     chain: bscTestnet,
@@ -84,13 +77,6 @@ export async function swapUSDCForToken(
     window: Pick<Window, "localStorage" | "location">;
   }
 ): Promise<Boolean> {
-
-  const seed = await authenticate(
-    context.user,
-    context.viemClient,
-    context.window.localStorage,
-    ""
-  );
 
   const txResuponse = await context.viemClient.writeContract({
     address: SWAPPER_ADDRESS,
