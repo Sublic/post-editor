@@ -17,6 +17,7 @@
     "@types/uuid": "^9.0.8",
     "@uiw/react-md-editor": "^4.0.3",
     "antd": "^5.14.0",
+    "bignumber.js": "^9.1.2",
     "connectkit": "^1.7.1",
     "next": "^14.1.0",
     "pino-pretty": "^10.3.1",
@@ -26,6 +27,7 @@
     "wagmi": "^2.5.7"
   },
   "devDependencies": {
+    "@types/bignumber.js": "^5.0.0",
     "@types/node": "20.11.17",
     "@types/react": "18.2.55",
     "@types/react-dom": "^18",
