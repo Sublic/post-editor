@@ -1244,9 +1244,9 @@ const abi = [
         type: "address[]",
       },
       {
-        internalType: "address",
-        name: "tokenAddress",
-        type: "address",
+        internalType: "string",
+        name: "tokenSymbol",
+        type: "string",
       },
     ],
     name: "createMediaResource",
@@ -1457,6 +1457,44 @@ const abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    name: "mediaIds",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    name: "mediaTokens",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "owner",
     outputs: [
@@ -1528,6 +1566,11 @@ const abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "sublicTokenFactory",
+        type: "address",
+      },
+      {
         internalType: "uint64",
         name: "readQuotaToCharge",
         type: "uint64",
@@ -1586,6 +1629,11 @@ const abi = [
       {
         internalType: "address",
         name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
         type: "address",
       },
       {
@@ -1710,6 +1758,11 @@ const abi = [
             type: "address",
           },
           {
+            internalType: "address",
+            name: "sublicTokenFactory",
+            type: "address",
+          },
+          {
             internalType: "uint64",
             name: "readQuotaToCharge",
             type: "uint64",
@@ -1751,25 +1804,6 @@ const abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    name: "mediaIds",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "versionInfo",
     outputs: [
@@ -1804,6 +1838,7 @@ export function AdminParams(
   tuple: readonly [
     `0x${string}`,
     `0x${string}`,
+    `0x${string}`,
     bigint,
     bigint,
     bigint,
@@ -1814,6 +1849,7 @@ export function AdminParams(
 ): {
   tokenHub: `0x${string}`;
   spAddress: `0x${string}`;
+  sublicTokenFactory: `0x${string}`;
   readQuotaToCharge: bigint;
   bucketValueAmount: bigint;
   subscribersValueAmount: bigint;
@@ -1824,17 +1860,19 @@ export function AdminParams(
   return {
     tokenHub: tuple[0],
     spAddress: tuple[1],
-    readQuotaToCharge: tuple[2],
-    bucketValueAmount: tuple[3],
-    subscribersValueAmount: tuple[4],
-    authorsValueAmount: tuple[5],
-    authorsAddValueAmount: tuple[6],
-    protocolFee: tuple[7],
+    sublicTokenFactory: tuple[2],
+    readQuotaToCharge: tuple[3],
+    bucketValueAmount: tuple[4],
+    subscribersValueAmount: tuple[5],
+    authorsValueAmount: tuple[6],
+    authorsAddValueAmount: tuple[7],
+    protocolFee: tuple[8],
   };
 }
 
 export function MediaResource(
   tuple: readonly [
+    `0x${string}`,
     `0x${string}`,
     `0x${string}`,
     bigint,
@@ -1849,6 +1887,7 @@ export function MediaResource(
 ): {
   id: `0x${string}`;
   owner: `0x${string}`;
+  token: `0x${string}`;
   bucketId: number;
   subcribersGroupId: number;
   authorsGroupId: number;
@@ -1861,13 +1900,14 @@ export function MediaResource(
   return {
     id: tuple[0],
     owner: tuple[1],
-    bucketId: Number(tuple[2]),
-    subcribersGroupId: Number(tuple[3]),
-    authorsGroupId: Number(tuple[4]),
-    unspentEth: tuple[5],
-    isBucketIdSet: tuple[6],
-    isSubscribersGroupIdSet: tuple[7],
-    isAuthorsGroupIdSetSet: tuple[8],
-    isAuthorsAddedToGroup: tuple[9],
+    token: tuple[2],
+    bucketId: Number(tuple[3]),
+    subcribersGroupId: Number(tuple[4]),
+    authorsGroupId: Number(tuple[5]),
+    unspentEth: tuple[6],
+    isBucketIdSet: tuple[7],
+    isSubscribersGroupIdSet: tuple[8],
+    isAuthorsGroupIdSetSet: tuple[9],
+    isAuthorsAddedToGroup: tuple[10],
   };
 }

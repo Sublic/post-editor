@@ -1,6 +1,5 @@
 export type InitMediaRequest = {
   name: string;
-  tokenName: string;
   tokenSymbol: string;
   authors: Array<string>;
 };
