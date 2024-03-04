@@ -9,15 +9,6 @@ import { GREEN_CHAIN_ID } from "@/config";
 import { bscTestnet } from "viem/chains";
 import { getBucketFromMediaId } from "@/client/getBucketFromMediaId";
 
-const articles: Record<string, Omit<Article, "id">> = {
-  "123": {
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    name: "Awesome article 1",
-    text: "___Cool text___",
-  },
-};
-
 function useArticle(mediaId: string, preview: string, address: `0x${string}` | undefined, walletClient: any, bscReadClient: any) {
   return useQuery<Article, Error, Article, [string, string, string]>({
     queryKey: ["ARTICLE_LOAD", mediaId, preview],
