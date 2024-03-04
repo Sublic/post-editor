@@ -1,21 +1,20 @@
 "use client";
+import { client, selectSp } from "@/client/client";
 import { useEffect, useState } from "react";
 import { ArticleList, ArticlePreview } from "@/components/feed";
 import { getBucketFromMediaId } from "@/client/getBucketFromMediaId";
+import { authenticate } from "@/client/auth";
 
 export function useGreenfieldLoadArticles(mediaId: string, address: string, walletClient: any, readClient: any, bscReadClient: any) {
     const [articles, setArticles] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    // console.log(mediaId, address);
+    
     useEffect(() => {
     const loadArticles = async () => {
         setIsLoading(true);
         setError(null);
         try {
-        // Replace this with your actual function to fetch articles
-        // const fetchedArticles = await fetchArticlesFromStorage(address);
-        // Simulating a fetch operation
         const { bucketInfo } = await getBucketFromMediaId(mediaId, {
             readClient: bscReadClient,
           });
@@ -23,48 +22,61 @@ export function useGreenfieldLoadArticles(mediaId: string, address: string, wall
         if (!bucketInfo?.bucketName) {
             throw new Error("Failed to fetch bucket info");
         }
-        
+        const seed = await authenticate(
+            address,
+            walletClient,
+            window.localStorage,
+            ""
+          );
         console.log(address, bucketInfo.bucketName, mediaId);
-        const fetchedArticles = await new Promise((resolve) => setTimeout(() => resolve([
-        
-            {
-                id: "123",
-                name: "Awesome article 1lll",
-                description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            },
-            {
-                id: "456",
-                name: "Awesome article 2lll",
-                description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            },
-            {
-                id: "789",
-                name: "Awesome article 3lll",
-                description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            },
-            {
-                id: "1111",
-                name: "Awesome article 4lll",
-                description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            },
-            {
-                id: "1",
-                name: "Awesome article 5lll",
-                description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            },
-            {
-                id: "2",
-                name: "Awesome article 6lll",
-                description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            },
-                
-        ]), 1000));
+        let bucketName = bucketInfo.bucketName;
+        const spInfo = await selectSp();
+
+        let res = await client.object.listObjects({
+            bucketName,
+            endpoint: spInfo.endpoint,
+        });
+        if (!res.body.GfSpListObjectsByBucketNameResponse.Objects) {
+            throw new Error("Failed to objects");
+        }
+        let rawObjects = res.body.GfSpListObjectsByBucketNameResponse.Objects;
+        let articlesMap = {};
+        for (const obj of rawObjects) {
+            const { ObjectName, BucketName } = obj.ObjectInfo;
+            // Extract the UUID by splitting the ObjectName and taking the first part
+            const [uuid] = ObjectName.split('/');
+            if (!articlesMap[uuid]) {
+                articlesMap[uuid] = { id: uuid, nameDescription: '', content: '' };
+            }
+            if (ObjectName.endsWith('name_description.txt')) {
+                // acc[uuid].nameDescription = `${BucketName}/${ObjectName}`;
+                let obj = await client.object.getObject({
+                    bucketName: bucketName,
+                    objectName: ObjectName,
+                 },
+                 {
+                    type: 'EDDSA',
+                    address,
+                    domain: window.location.origin,
+                    seed: seed,
+                 });
+                 const text = await obj.body.text();
+                 const parts = text.split("\n----\n");
+                 articlesMap[uuid].name = parts[0].trim();
+                 articlesMap[uuid].description = parts[1].trim();
+            }
+            if (ObjectName.endsWith('content.md')) {
+                articlesMap[uuid].content = `${ObjectName}`;
+            }
+        }
+        console.log(articlesMap);
+        const fetchedArticles: any[] = Object.values(articlesMap).map((article: any) => {
+            return {
+                id: article.id,
+                name: article.name,
+                description: article.description,
+            };
+        });
 
         setArticles(fetchedArticles);
         } catch (err) {
