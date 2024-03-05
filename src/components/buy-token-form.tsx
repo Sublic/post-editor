@@ -2,6 +2,7 @@ import { useAccount } from "@/hooks/useAccount";
 import { useApproveToken } from "@/hooks/useApproveToken";
 import { useBuySubscriptionToken } from "@/hooks/useBuySubscriptionToken";
 import { useMediaTokenAddress } from "@/hooks/useMediaTokenAddress";
+import { useTargetChain } from "@/hooks/useTargetChain";
 import { useUSDCBalance } from "@/hooks/useUSDCBalance";
 import {
   App,
@@ -16,6 +17,7 @@ import BigNumber from "bignumber.js";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import { zeroAddress } from "viem";
+import { bscTestnet } from "viem/chains";
 
 interface BuyTokenFormProps {
   mediaId: `0x${string}`;
@@ -26,6 +28,7 @@ export function BuyTokenForm({ mediaId }: BuyTokenFormProps) {
 
   const { tokenAddress, isLoading } = useMediaTokenAddress(mediaId);
   const { address } = useAccount();
+  const [isTargetChainSelected, switchChain] = useTargetChain(bscTestnet.id);
 
   const {
     value,
@@ -45,15 +48,10 @@ export function BuyTokenForm({ mediaId }: BuyTokenFormProps) {
   const printableAmount =
     (value || BigInt(0)) / BigInt(Math.pow(10, decimals || 6));
 
-  const isButtonDisabled =
-    isLoading ||
-    buyStatus.isPending ||
-    approveStatus.isPending ||
-    (value != null &&
-      (BigNumber(value.toString()).lt(amountToBuy) || amountToBuy.lte(0))) ||
-    buyStatus.isSuccess;
-
-  const isButtonLoading = buyStatus.isPending || approveStatus.isPending;
+  const amountToBuyIsCorrect =
+    value != null &&
+    BigNumber(value.toString()).gte(amountToBuy) &&
+    amountToBuy.gt(0);
 
   const isApproveRequired = BigNumber(allowance?.toString() || 0).lte(
     amountToBuy
@@ -81,11 +79,40 @@ export function BuyTokenForm({ mediaId }: BuyTokenFormProps) {
 
   const buy = () => {
     writeBuy(amountToBuy.multipliedBy(BigNumber(10).pow(decimals || 6)));
+    setAmountToBuy(BigNumber(0));
   };
+
+  const BuyButton = (
+    <Button
+      type="primary"
+      onClick={buy}
+      disabled={
+        buyStatus.isPending || buyStatus.isSuccess || !amountToBuyIsCorrect
+      }
+    >
+      {buyStatus.isPending ? <Spin /> : "Buy"}
+    </Button>
+  );
 
   const approve = () => {
     writeApprove(amountToBuy.multipliedBy(BigNumber(10).pow(decimals || 6)));
   };
+
+  const ApproveButton = (
+    <Button
+      type="primary"
+      onClick={approve}
+      disabled={approveStatus.isPending || !amountToBuyIsCorrect}
+    >
+      {approveStatus.isPending ? <Spin /> : "Approve"}
+    </Button>
+  );
+
+  const SwitchButton = (
+    <Button type="primary" onClick={switchChain}>
+      Switch to BNB chain
+    </Button>
+  );
 
   if (tokenAddress === zeroAddress) {
     notFound();
@@ -111,13 +138,11 @@ export function BuyTokenForm({ mediaId }: BuyTokenFormProps) {
         )}
       </Form.Item>
       <Form.Item>
-        <Button
-          type="primary"
-          onClick={isApproveRequired ? approve : buy}
-          disabled={isButtonDisabled}
-        >
-          {isButtonLoading ? <Spin /> : isApproveRequired ? "Approve" : "Buy"}
-        </Button>
+        {isTargetChainSelected
+          ? isApproveRequired
+            ? ApproveButton
+            : BuyButton
+          : SwitchButton}
       </Form.Item>
     </Form>
   );
