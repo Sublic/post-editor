@@ -39,26 +39,31 @@ export async function getSublicGroups(
   context: { readClient: PublicClient }
 ): Promise<Array<SublicGroup>> {
   const allGroups = await client.sp.listUserGroups({ address: user });
+
+  if (allGroups.body?.GfSpGetUserGroupsResponse.Groups == null) {
+    throw new Error("Greenfield Groups fetch failed");
+  }
+
   return Promise.all(
-    allGroups.body?.GfSpGetUserGroupsResponse?.Groups?.filter(
+    allGroups.body.GfSpGetUserGroupsResponse.Groups.filter(
       (group) =>
         group.Group.GroupName.startsWith(PREFIX) &&
         group.Group.Owner.toLowerCase() === FACTORY_ADDRESS.toLowerCase()
     )
-      ?.map((group) => ({
+      .map((group) => ({
         name: group.Group.GroupName,
         id: group.Group.Id,
         type: group.Group.GroupName.endsWith(AUTHORS_POSTFIX)
           ? "authors"
           : ("subscribers" as SublicGroup["type"]),
       }))
-      ?.map((g) => ({
+      .map((g) => ({
         ...g,
         mediaName: getMediaName(g),
       }))
-      ?.map(async (g) => ({
+      .map(async (g) => ({
         ...g,
         mediaId: await getMediaId(g.mediaName, context.readClient),
-      })) || []
+      }))
   );
 }

@@ -23,7 +23,7 @@ export function SubscriptionGate({
       <Spin />{" "}
       <Typography.Text strong>Checking your subscription</Typography.Text>
     </Space>
-  ) : isSuccess && isSubscribed ? (
+  ) : isSubscribed != null && isSubscribed ? (
     children
   ) : (
     <Space className="w-full" direction="vertical">
