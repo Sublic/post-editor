@@ -17,5 +17,7 @@ export function useCheckSubscription(
       return groups.findIndex((group) => group.mediaId === queryKey[1]) !== -1;
     },
     enabled: Boolean(userAddress) && Boolean(mediaId),
+    retryDelay: 1000,
+    retry: true,
   });
 }
