@@ -47,6 +47,18 @@ export default function Page() {
         Anyone who wants to follow blog have to buy the SUBLIC and move it price
         higher
       </Typography.Paragraph>
+      <Typography.Title level={4} className="mt-5">
+        Links with more info
+      </Typography.Title>
+      <Typography.Paragraph >
+        <a href="https://github.com/Sublic" target="_blank" >
+          github repo
+        </a>
+        <br />
+        <a href="https://www.youtube.com/watch?v=swUCHdnFGP0&feature=youtu.be" target="_blank" >
+          video demo
+        </a>
+      </Typography.Paragraph>
     </Space>
   );
 }
