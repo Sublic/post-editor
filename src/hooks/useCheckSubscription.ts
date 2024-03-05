@@ -19,5 +19,7 @@ export function useCheckSubscription(
     enabled: Boolean(userAddress) && Boolean(mediaId),
     retryDelay: 1000,
     retry: true,
+    gcTime: Infinity,
+    staleTime: Infinity,
   });
 }
