@@ -4,7 +4,7 @@ import { bscTestnet } from "viem/chains";
 import { usePublicClient } from "wagmi";
 
 export function useCheckSubscription(
-  mediaId: `0x${string}`,
+  mediaId?: `0x${string}`,
   userAddress?: `0x${string}`
 ) {
   const readClient = usePublicClient({ chainId: bscTestnet.id })!;
@@ -16,6 +16,6 @@ export function useCheckSubscription(
       });
       return groups.findIndex((group) => group.mediaId === queryKey[1]) !== -1;
     },
-    enabled: Boolean(userAddress),
+    enabled: Boolean(userAddress) && Boolean(mediaId),
   });
 }

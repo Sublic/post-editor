@@ -1,6 +1,5 @@
 "use client";
 import { Article, ArticleInfo } from "@/components/feed";
-import { SubscriptionGate } from "@/components/subscription-gate";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Spin } from "antd";
 import { downloadFile } from "@/client/greenfieldDownloadFile";
@@ -84,15 +83,13 @@ export default function Page({
   );
   return (
     <Row justify="center" className="px-[10%]">
-      <SubscriptionGate mediaId={params.id}>
-        {isLoading ? (
-          <Spin tip="Loading..." className="mt-10">
-            <div />
-          </Spin>
-        ) : (
-          <ArticleInfo {...data!} />
-        )}
-      </SubscriptionGate>
+      {isLoading ? (
+        <Spin tip="Loading..." className="mt-10">
+          <div />
+        </Spin>
+      ) : (
+        <ArticleInfo {...data!} />
+      )}
     </Row>
   );
 }
