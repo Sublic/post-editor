@@ -5,10 +5,11 @@ import { publishToGreenfield } from "@/components/greenfield-uploader";
 import { usePersistence } from "@/hooks/usePersistence";
 import { embedImagesIntoMarkdown } from "@/utils/markdown";
 import MDEditor from "@uiw/react-md-editor";
-import { Button, Col, Form, Input, Row, Space, Tabs, Typography } from "antd";
-import { useMemo, useState } from "react";
+import { Button, Col, Form, Input, Row, Space, Tabs, Typography, App } from "antd";
+import { useMemo, useState, useEffect } from "react";
 import { ContentOrPrompt } from "@/components/create-media-form/content-or-prompt";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { useTargetChain } from "@/hooks/useTargetChain";
 import { GREEN_CHAIN_ID } from "@/config";
 import Script from "next/script";
 import { bscTestnet } from "viem/chains";
@@ -18,6 +19,9 @@ interface EditorProps {
 }
 
 export function Editor({ mediaId }: EditorProps) {
+  const [isAppropriateChain, switchChain] = useTargetChain(GREEN_CHAIN_ID);
+  const { notification } = App.useApp();
+  
   const [selectedTab, selectTab] = useState<"editor" | "article">("editor");
   const {
     title,
@@ -45,19 +49,31 @@ export function Editor({ mediaId }: EditorProps) {
   );
   const handleFormSubmit = async () => {
     // Call publishToGreenfield with the current state
-    await publishToGreenfield({
-      title,
-      brief,
-      markdown: replasedMarkdown,
-      images,
-      mediaId,
-      address,
-      readClient,
-      bscReadClient,
-      walletClient: walletClient!,
-    });
+    try {
+      await publishToGreenfield({
+        title,
+        brief,
+        markdown: replasedMarkdown,
+        images,
+        mediaId,
+        address,
+        readClient,
+        bscReadClient,
+        walletClient: walletClient!,
+      });
+      notification.success({
+        message: 'Article Published Successfully',
+        description: 'Your article has been successfully published.',
+      });
+    } catch (error) {
+      // Handle the error case
+      notification.error({
+        message: 'Article Publication Failed',
+        description: 'There was a problem publishing your article.',
+      });
+    }
   };
-
+  
   return (
     <>
       <Typography.Title level={2}>Create your amazing article</Typography.Title>
@@ -131,11 +147,15 @@ export function Editor({ mediaId }: EditorProps) {
                     }}
                   />
                 </Form.Item>
-                <Row justify="center">
+                {isAppropriateChain ? (
                   <Button type="primary" htmlType="submit">
                     Publish
                   </Button>
-                </Row>
+                ) : (
+                  <Button type="primary" onClick={() => switchChain()}>
+                    Switch to Greenfield
+                  </Button>
+                )}
               </Space>
             </Form>
           </Col>
